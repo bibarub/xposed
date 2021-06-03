@@ -18,6 +18,7 @@ unzip -o "$ZIPFILE" "post-fs-data.sh" -d $TMPDIR >&2
 unzip -o "$ZIPFILE" "$API/$ARCH/*" -d $TMPDIR >&2
 unzip -o "$ZIPFILE" "module.prop" -d $TMPDIR >&2
 unzip -o "$ZIPFILE" "common/$XPOSEDBRIDGE" -d $TMPDIR >&2
+unzip -o "$ZIPFILE" "common/XposedInstallerMagisk.apk" -d $TMPDIR >&2
 
 XPOSEDDIR=$TMPDIR/$API/$ARCH
 [ -d $XPOSEDDIR ] || abort "! Unsupported device"
@@ -30,6 +31,8 @@ cp $TMPDIR/post-fs-data.sh $MODPATH
 mkdir -p $MODPATH/system/framework
 cp $TMPDIR/common/$XPOSEDBRIDGE $MODPATH/system/framework/XposedBridge.jar
 cp -af $XPOSEDDIR/system/. $MODPATH/system
+mkdir -p $MODPATH/system/app/XposedInstallerMagisk
+cp $TMPDIR/common/XposedInstallerMagisk.apk $MODPATH/system/app/XposedInstallerMagisk/XposedInstallerMagisk.apk
 cat << EOF > $MODPATH/xposed.prop
 version=${XVERSION}
 arch=${ARCH}
