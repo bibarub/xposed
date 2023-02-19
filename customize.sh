@@ -7,18 +7,20 @@ ui_print "*******************************"
 
 
 ui_print "- Extracting module files"
+unzip -o "$ZIPFILE" "post-fs-data.sh" -d $TMPDIR >&2
+unzip -o "$ZIPFILE" "$API/$ARCH/*" -d $TMPDIR >&2
+unzip -o "$ZIPFILE" "module.prop" -d $TMPDIR >&2
+unzip -o "$ZIPFILE" "common/XposedInstallerMagisk.apk" -d $TMPDIR >&2
 if [ $API -ge 26 ]; then
   XVERSION="90-beta3"
   XPOSEDBRIDGE="XposedBridge.90.jar"
 else
   XVERSION="89"
   XPOSEDBRIDGE="XposedBridge.89.jar"
+  sed -i 's/90-beta3/89/' $TMPDIR/module.prop
+  sed -i 's/9030/8900/' $TMPDIR/module.prop
 fi
-unzip -o "$ZIPFILE" "post-fs-data.sh" -d $TMPDIR >&2
-unzip -o "$ZIPFILE" "$API/$ARCH/*" -d $TMPDIR >&2
-unzip -o "$ZIPFILE" "module.prop" -d $TMPDIR >&2
 unzip -o "$ZIPFILE" "common/$XPOSEDBRIDGE" -d $TMPDIR >&2
-unzip -o "$ZIPFILE" "common/XposedInstallerMagisk.apk" -d $TMPDIR >&2
 
 XPOSEDDIR=$TMPDIR/$API/$ARCH
 [ -d $XPOSEDDIR ] || abort "! Unsupported device"
