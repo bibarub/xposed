@@ -42,6 +42,10 @@ EOF
 [ $API -ge 26 ] && echo "requires:fbe_aware=1" >> $MODPATH/xposed.prop
 cp $TMPDIR/module.prop $MODPATH
 
+set_perm_check() {
+  [ -f "$1" ] || return
+  set_perm "$@"
+}
 
 set_perm_recursive $MODPATH 0 0 0755 0644
 
@@ -52,8 +56,3 @@ set_perm_check  $MODPATH/system/bin/dex2oat             0   2000    0755    u:ob
 set_perm_check  $MODPATH/system/bin/patchoat            0   2000    0755    u:object_r:zygote_exec:s0
 set_perm_check  $MODPATH/system/bin/dexoptanalyzer      0   2000    0755    u:object_r:dexoptanalyzer_exec:s0
 set_perm_check  $MODPATH/system/bin/profman             0   2000    0755    u:object_r:profman_exec:s0
-
-set_perm_check() {
-  [ -f "$1" ] || return
-  set_perm "$@"
-}
