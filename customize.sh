@@ -7,10 +7,10 @@ ui_print "*******************************"
 
 
 ui_print "- Extracting module files"
-unzip -o "$ZIPFILE" "post-fs-data.sh" -d $TMPDIR >&2
+unzip -o "$ZIPFILE" "*.sh" -d $MODPATH >&2
 unzip -o "$ZIPFILE" "$API/$ARCH/*" -d $TMPDIR >&2
-unzip -o "$ZIPFILE" "module.prop" -d $TMPDIR >&2
-unzip -o "$ZIPFILE" "common/XposedInstallerMagisk.apk" -d $TMPDIR >&2
+unzip -o "$ZIPFILE" "module.prop" -d $MODPATH >&2
+unzip -o "$ZIPFILE" "XposedInstaller.apk" -d $MODPATH >&2
 if [ $API -ge 26 ]; then
   XVERSION="90-beta3"
   XPOSEDBRIDGE="XposedBridge.90.jar"
@@ -20,7 +20,7 @@ else
   sed -i 's/90-beta3/89/' $TMPDIR/module.prop
   sed -i 's/9030/8900/' $TMPDIR/module.prop
 fi
-unzip -o "$ZIPFILE" "common/$XPOSEDBRIDGE" -d $TMPDIR >&2
+unzip -o "$ZIPFILE" "$XPOSEDBRIDGE" -d $TMPDIR >&2
 
 XPOSEDDIR=$TMPDIR/$API/$ARCH
 [ -d $XPOSEDDIR ] || abort "! Unsupported device"
@@ -29,12 +29,9 @@ ui_print "- Xposed version: $XVERSION"
 ui_print "- Device platform: $ARCH"
 
 ui_print "- Copying files"
-cp $TMPDIR/post-fs-data.sh $MODPATH
 mkdir -p $MODPATH/system/framework
-cp $TMPDIR/common/$XPOSEDBRIDGE $MODPATH/system/framework/XposedBridge.jar
+cp $TMPDIR/$XPOSEDBRIDGE $MODPATH/system/framework/XposedBridge.jar
 cp -af $XPOSEDDIR/system/. $MODPATH/system
-mkdir -p $MODPATH/system/app/XposedInstallerMagisk
-cp $TMPDIR/common/XposedInstallerMagisk.apk $MODPATH/system/app/XposedInstallerMagisk/XposedInstallerMagisk.apk
 cat << EOF > $MODPATH/xposed.prop
 version=${XVERSION}
 arch=${ARCH}

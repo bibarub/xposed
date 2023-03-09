@@ -1,4 +1,3 @@
-#!/system/bin/sh
 MODDIR=${0%/*}
 DISABLE=/data/data/de.robv.android.xposed.installer/conf/disabled
 MIRRDIR=/sbin/.magisk/mirror
@@ -19,14 +18,11 @@ if [ -f $MODDIR/lists ]; then
 fi
 rm -f $MODDIR/lists
 
-for ODEX in `find /system -type f -name "*.odex*" 2>/dev/null`; do
+for ODEX in `find /system -type f -name "*.odex.*" 2>/dev/null`; do
   # Rename the odex files
   mkdir -p $MODDIR${ODEX%/*}
   touch $MODDIR${ODEX%/*}/.replace
   ln -s $MIRRDIR$ODEX $MODDIR${ODEX}.xposed
   # Record so we can remove afterwards
   echo ${ODEX%/*} >> $MODDIR/lists
-done
-for BOOT in `find /system/framework -type f -name "boot.*" 2>/dev/null`; do
-  ln -s $MIRRDIR$BOOT $MODDIR$BOOT 2>/dev/null
 done
